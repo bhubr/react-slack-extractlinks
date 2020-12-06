@@ -2,10 +2,12 @@ dependencies:
   '@testing-library/jest-dom': 5.11.6
   '@testing-library/react': 11.2.2_react-dom@17.0.1+react@17.0.1
   '@testing-library/user-event': 12.5.0
+  axios: 0.21.0
   react: 17.0.1
   react-dom: 17.0.1_react@17.0.1
   react-refresh: 0.9.0
   react-scripts: 4.0.1
+  react-simple-oauth2-login: 0.2.0_react@17.0.1
   web-vitals: 0.2.4
 lockfileVersion: 5.2
 packages:
@@ -2692,6 +2694,12 @@ packages:
       node: '>=4'
     resolution:
       integrity: sha512-5Kgy8Cz6LPC9DJcNb3yjAXTu3XihQgEdnIg50c//zOC/MyLP0Clg+Y8Sh9ZjjnvBrDZU4DgXS9C3T9r4/scGZQ==
+  /axios/0.21.0:
+    dependencies:
+      follow-redirects: 1.13.0
+    dev: false
+    resolution:
+      integrity: sha512-fmkJBknJKoZwem3/IKSSLpkdNXZeBu5Q7GA/aRsr2btgrptmSCxi2oFjZHqGdK9DoTil9PIHlPIZw2EcRJXRvw==
   /axobject-query/2.2.0:
     dev: false
     resolution:
@@ -9664,6 +9672,15 @@ packages:
         optional: true
     resolution:
       integrity: sha512-NnniMSC/wjwhcJAyPJCWtxx6CWONqgvGgV9+QXj1bwoW/JI++YF1eEf3Upf/mQ9KmP57IBdjzWs1XvnPq7qMTQ==
+  /react-simple-oauth2-login/0.2.0_react@17.0.1:
+    dependencies:
+      react: 17.0.1
+    dev: false
+    peerDependencies:
+      prop-types: ^15.7.2
+      react: ^16.0.0
+    resolution:
+      integrity: sha512-rVQJN/ngEpHK9uQl6S7ymtm0o39c7t/kUxjJg6Yy1uL7A9At0YqjhAw1mDVj2ht9EkVGE8QgzYbXZElRC2OeFQ==
   /react/17.0.1:
     dependencies:
       loose-envify: 1.4.0
@@ -12148,8 +12165,10 @@ specifiers:
   '@testing-library/jest-dom': ^5.11.4
   '@testing-library/react': ^11.1.0
   '@testing-library/user-event': ^12.1.10
+  axios: ^0.21.0
   react: ^17.0.1
   react-dom: ^17.0.1
   react-refresh: ^0.9.0
   react-scripts: 4.0.1
+  react-simple-oauth2-login: ^0.2.0
   web-vitals: ^0.2.4
