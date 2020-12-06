@@ -5,3 +5,16 @@
   height: calc(100vh - 45px);
   overflow-y: scroll;
 }
+
+.ConversationsList-filter {
+  padding: 0.25em 0;
+  color: #ddd;
+}
+
+.ConversationsList-filter input {
+  margin-left: 0.5em;
+  background: #628;
+  color: #eee;
+  border: transparent;
+  border-radius: 2px;
+}

@@ -27,15 +27,21 @@ function App() {
     resetStoredAuth();
   };
 
-  useEffect(() => {
-    if (!auth || !!conversations) return;
-    getConversationsList(auth.token)
-      .then(({ channels, next_cursor: nextCursor }) => {
+  const loadConversations = (cur = "") =>
+    getConversationsList(auth.token, cur)
+      .then(({ channels, response_metadata: meta }) => {
+        const { next_cursor: nextCursor } = meta;
         setConversations(channels);
         setCursor(nextCursor);
       })
       .catch(setError);
+
+  useEffect(() => {
+    if (!auth || !!conversations) return;
+    loadConversations();
   }, [auth, conversations]);
+
+  const handleClickNext = () => loadConversations(cursor);
 
   if (!auth)
     return (
@@ -68,7 +74,10 @@ function App() {
       {error && <div className="App-error">{error.message}</div>}
 
       <div className="App-inner">
-        <ConversationsList channels={conversations} />
+        <ConversationsList
+          channels={conversations}
+          onClickNext={handleClickNext}
+        />
       </div>
     </div>
   );
