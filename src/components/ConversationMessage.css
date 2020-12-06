@@ -1,0 +1,23 @@
+.ConversationMessage {
+  font-size: 14px;
+  display: flex;
+  max-width: 100%;
+}
+
+.ConversationMessage > div {
+  width: 50%;
+  overflow-wrap: break-word;
+  padding: 0 0.5em;
+}
+
+.ConversationMessage-dimmed {
+  opacity: 0.5;
+}
+
+.ConversationMessage p {
+  margin: 0.25em 0;
+}
+
+.ConversationMessage:nth-child(2n) > div:first-of-type {
+  background: #eee;
+}

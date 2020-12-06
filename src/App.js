@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import OAuth2Login from "react-simple-oauth2-login";
 import { Switch, Route } from "react-router-dom";
 import ConversationsList from "./components/ConversationsList";
@@ -29,22 +29,25 @@ function App() {
     resetStoredAuth();
   };
 
-  const loadConversations = (cur = "") =>
-    getConversationsList(auth.token, cur)
-      .then(
-        ({ ok, error: errorMessage, channels, response_metadata: meta }) => {
-          if (!ok) throw new Error(errorMessage);
-          const { next_cursor: nextCursor } = meta;
-          setConversations(channels);
-          setCursor(nextCursor);
-        }
-      )
-      .catch(setError);
+  const loadConversations = useCallback(
+    (cur = "") =>
+      getConversationsList(auth.token, cur)
+        .then(
+          ({ ok, error: errorMessage, channels, response_metadata: meta }) => {
+            if (!ok) throw new Error(errorMessage);
+            const { next_cursor: nextCursor } = meta;
+            setConversations(channels);
+            setCursor(nextCursor);
+          }
+        )
+        .catch(setError),
+    [auth]
+  );
 
   useEffect(() => {
     if (!auth || !!conversations) return;
     loadConversations();
-  }, [auth, conversations]);
+  }, [auth, conversations, loadConversations]);
 
   const handleClickNext = () => loadConversations(cursor);
 
