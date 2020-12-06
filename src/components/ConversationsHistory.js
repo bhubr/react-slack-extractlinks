@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import classNames from "classnames";
+import Markdown from "react-markdown";
 import { getConversationsHistory } from "../helpers/api";
 import "./ConversationsHistory.css";
 
@@ -7,6 +9,7 @@ const extractMsgFields = ({ client_msg_id: id, type, text }) => ({
   id,
   type,
   text,
+  hasLinks: text.match(/https?:\/\//),
 });
 
 function ConversationsHistory({ token, setError }) {
@@ -21,7 +24,7 @@ function ConversationsHistory({ token, setError }) {
           if (!ok) throw new Error(errorMessage);
           const { next_cursor: nextCursor } = meta;
           const mappedMessages = messages
-            .filter((msg) => msg.text.match(/https?:\/\//))
+            // .filter((msg) => msg.text.match(/https?:\/\//))
             .map(extractMsgFields);
           setMessages(mappedMessages);
           setCursor(nextCursor);
@@ -42,9 +45,14 @@ function ConversationsHistory({ token, setError }) {
 
   return (
     <div className="ConversationsHistory">
-      {messages.map((msg) => (
-        <div className="ConversationsHistory-msg" key={msg.id}>
-          {msg.text}
+      {messages.map((msg, idx) => (
+        <div
+          className={classNames("ConversationsHistory-msg", {
+            "ConversationsHistory-msg-dimmed": !msg.hasLinks,
+          })}
+          key={msg.id}
+        >
+          <Markdown source={`**${idx}** ${msg.text}`} />
         </div>
       ))}
     </div>
