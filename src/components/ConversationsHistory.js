@@ -1,7 +1,13 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { getConversationsHistory } from "../helpers/api";
-// import "./ConversationsHistory.css";
+import "./ConversationsHistory.css";
+
+const extractMsgFields = ({ client_msg_id: id, type, text }) => ({
+  id,
+  type,
+  text,
+});
 
 function ConversationsHistory({ token, setError }) {
   const [messages, setMessages] = useState(null);
@@ -14,6 +20,7 @@ function ConversationsHistory({ token, setError }) {
         ({ ok, error: errorMessage, messages, response_metadata: meta }) => {
           if (!ok) throw new Error(errorMessage);
           const { next_cursor: nextCursor } = meta;
+          const mappedMessages = messages.map(extractMsgFields);
           setMessages(messages);
           setCursor(nextCursor);
         }
@@ -31,7 +38,15 @@ function ConversationsHistory({ token, setError }) {
     return <p>loading...</p>;
   }
 
-  return <div className="ConversationsHistory"></div>;
+  return (
+    <div className="ConversationsHistory">
+      {messages.map((msg) => (
+        <div className="ConversationsHistory-msg" key={msg.id}>
+          {msg.text}
+        </div>
+      ))}
+    </div>
+  );
 }
 
 export default ConversationsHistory;

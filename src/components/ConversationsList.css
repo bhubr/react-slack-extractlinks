@@ -4,6 +4,7 @@
   padding: 0.5em;
   height: calc(100vh - 45px);
   overflow-y: scroll;
+  min-width: 200px;
 }
 
 .ConversationsList a {

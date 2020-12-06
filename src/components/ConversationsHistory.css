@@ -1,0 +1,11 @@
+.ConversationsHistory {
+  height: calc(100vh - 45px);
+  overflow-y: scroll;
+}
+
+.ConversationsHistory-msg {
+  padding: 0.125em 0.5em;
+}
+.ConversationsHistory-msg:nth-child(2n) {
+  background: #eee;
+}
