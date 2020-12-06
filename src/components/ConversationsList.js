@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import "./ConversationsList.css";
 
 function ConversationsList({ channels, onClickNext }) {
@@ -8,7 +9,7 @@ function ConversationsList({ channels, onClickNext }) {
         .filter((chan) => !filter || chan.name.includes(filter))
         .map((chan) => (
           <div className="ConversationsList-channel" key={chan.id}>
-            {chan.name}
+            <Link to={`/${chan.id}`}>{chan.name}</Link>
           </div>
         ))
     : "loading";

@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import OAuth2Login from "react-simple-oauth2-login";
+import { Switch, Route } from "react-router-dom";
 import ConversationsList from "./components/ConversationsList";
+import ConversationsHistory from "./components/ConversationsHistory";
 import { getAccessToken, getConversationsList } from "./helpers/api";
 import {
   getStoredAuth,
@@ -78,6 +80,15 @@ function App() {
           channels={conversations}
           onClickNext={handleClickNext}
         />
+
+        <Switch>
+          <Route
+            exact
+            path="/"
+            render={() => <p className="App-idle">Choose a channel</p>}
+          />
+          <Route path="/:channelId" component={ConversationsHistory} />
+        </Switch>
       </div>
     </div>
   );

@@ -6,6 +6,16 @@
   overflow-y: scroll;
 }
 
+.ConversationsList a {
+  color: #eee;
+  text-decoration: none;
+}
+
+.ConversationsList a:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
 .ConversationsList-filter {
   padding: 0.25em 0;
   color: #ddd;
