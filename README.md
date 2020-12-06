@@ -1,70 +1,28 @@
-# Getting Started with Create React App
+# Slack ExtractLinks
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+> :warning: this stuff is WIP, and a bit messy!
 
-## Available Scripts
+## Goals (Not there yet!)
 
-In the project directory, you can run:
+- Automatically get links from messages where I put a lot of them
+- Process them so that I can feed them to an online spreadsheet, a database, etc.
 
-### `yarn start`
+## How to use it
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+This app is made of:
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+- a Node.js server in `server` (obviously),
+- a React client app at the root
 
-### `yarn test`
+In order to use it, you need to:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+1. install the deps (`npm i` at the root and in `server`),
+2. create an OAuth2 app on Slack (a bot, that is)
+3. Invite this bot by its name on the Slack channels you need to extract links from. If your bot is name LinksBot, type `/invite @LinksBot` in relevant channels.
+4. configure the environment variables (see `/.env.local.sample` and `/server/.env.sample`)
 
-### `yarn build`
+Keep in mind that even if you sign in to Slack with _your_ account, when you sign in to this app, your access token will be granted to the **bot**, not to your user account!
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Todo
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- Replace `conversations.list` with [users.conversations](https://api.slack.com/methods/users.conversations)
