@@ -25,8 +25,8 @@ function ConversationsList({ channels, onClickNext }) {
           Filter
           <input value={filter} onChange={handleChangeFilter} />
         </label>
-        <div>
-          {matches}
+        <div className="ConversationsList-filter-inner">
+          <span>{matches}</span>
           <button type="button" onClick={onClickNext}>
             Next
           </button>

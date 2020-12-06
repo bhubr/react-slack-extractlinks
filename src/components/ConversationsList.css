@@ -21,6 +21,22 @@
   color: #ddd;
 }
 
+.ConversationsList-filter-inner {
+  display: flex;
+  padding: 0.25em 0;
+}
+
+.ConversationsList-filter-inner span {
+  flex-grow: 1;
+}
+
+.ConversationsList-filter button {
+  color: #fff;
+  background: transparent;
+  border: 1px solid #fff;
+  border-radius: 2px;
+}
+
 .ConversationsList-filter input {
   margin-left: 0.5em;
   background: #628;
