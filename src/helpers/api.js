@@ -12,11 +12,13 @@ export const getAccessToken = (code) =>
       userId: user.id,
     }));
 
-export const getConversationsList = async (token) =>
-  axios
-    .get("/api/conversations.list", {
+export const getConversationsList = async (token, cursor) => {
+  const query = cursor ? `?cursor=${cursor}` : "";
+  return axios
+    .get(`/api/conversations.list${query}`, {
       headers: {
         authorization: `Bearer ${token}`,
       },
     })
     .then((res) => res.data);
+};

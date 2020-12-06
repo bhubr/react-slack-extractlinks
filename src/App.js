@@ -14,6 +14,7 @@ function App() {
   const [auth, setAuth] = useState(getStoredAuth());
   const [error, setError] = useState(null);
   const [conversations, setConversations] = useState(null);
+  const [cursor, setCursor] = useState("");
 
   const onSuccess = ({ code }) =>
     getAccessToken(code).then((authData) => {
@@ -28,9 +29,13 @@ function App() {
 
   useEffect(() => {
     if (!auth || !!conversations) return;
-    console.log("fire effect");
-    getConversationsList(auth.token).then(setConversations).catch(setError);
-  }, [auth]);
+    getConversationsList(auth.token)
+      .then(({ channels, next_cursor: nextCursor }) => {
+        setConversations(channels);
+        setCursor(nextCursor);
+      })
+      .catch(setError);
+  }, [auth, conversations]);
 
   if (!auth)
     return (
@@ -48,15 +53,19 @@ function App() {
     );
 
   return (
-    <div className="App container">
-      {error && <div className="App-error">{error.message}</div>}
-      <nav>
-        {auth.token} {auth.userId}
+    <div className="App">
+      <nav className="App-nav">
+        <span className="App-nav-title">Slack GetLinks</span>
+        {auth.userId}
         <button type="button" onClick={signout}>
           Sign out
         </button>
       </nav>
-      {conversations && <ConversationsList channels={conversations.channels} />}
+      {error && <div className="App-error">{error.message}</div>}
+
+      <div className="App-inner">
+        <ConversationsList channels={conversations} />
+      </div>
     </div>
   );
 }

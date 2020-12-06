@@ -1,13 +1,12 @@
+import "./ConversationsList.css";
+
 function ConversationsList({ channels }) {
-  return (
-    <div className="ConversationsList">
-      {channels.map((chan) => (
-        <div className="ConversationsList-channel">
-          {chan.id} {chan.name}
-        </div>
-      ))}
-    </div>
-  );
+  const content = channels
+    ? channels.map((chan) => (
+        <div className="ConversationsList-channel">{chan.name}</div>
+      ))
+    : "loading";
+  return <div className="ConversationsList">{content}</div>;
 }
 
 export default ConversationsList;

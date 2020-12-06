@@ -43,11 +43,11 @@ app.get("/auth/token", (req, res) => {
 
 app.get("/api/conversations.list", async (req, res) => {
   const { authorization } = req.headers;
-  console.log(authorization);
+  const { cursor } = { cursor: "", ...req.query };
   if (!authorization) return res.sendStatus(401);
   const [, token] = authorization.match(/Bearer (.*)/);
   try {
-    const conversations = await getConversationsList(token);
+    const conversations = await getConversationsList(token, cursor);
     return res.json(conversations);
   } catch (err) {
     console.error(err);
