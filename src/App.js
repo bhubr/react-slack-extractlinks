@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import OAuth2Login from "react-simple-oauth2-login";
-import { getAccessToken } from "./helpers/api";
+import { getAccessToken, getConversationsList } from "./helpers/api";
 import {
   getStoredAuth,
   setStoredAuth,
@@ -12,6 +12,7 @@ import { authorizationUrl, clientId, scopes, redirectUri } from "./settings";
 function App() {
   const [auth, setAuth] = useState(getStoredAuth());
   const [error, setError] = useState(null);
+  const [conversations, setConversations] = useState(null);
 
   const onSuccess = ({ code }) =>
     getAccessToken(code).then((authData) => {
@@ -23,6 +24,12 @@ function App() {
     setAuth(null);
     resetStoredAuth();
   };
+
+  useEffect(() => {
+    if (!auth || !!conversations) return;
+    console.log("fire effect");
+    getConversationsList(auth.token).then(setConversations).catch(setError);
+  }, [auth]);
 
   if (!auth)
     return (
@@ -41,12 +48,14 @@ function App() {
 
   return (
     <div className="App container">
+      {error && <div className="App-error">{error.message}</div>}
       <nav>
         {auth.token} {auth.userId}
         <button type="button" onClick={signout}>
           Sign out
         </button>
       </nav>
+      {conversations && conversations.length}
     </div>
   );
 }

@@ -7,3 +7,8 @@
   max-width: 30em;
   margin: 0 auto;
 }
+
+.App-error {
+  background: #b33;
+  color: white;
+}
