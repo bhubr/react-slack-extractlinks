@@ -20,8 +20,10 @@ function ConversationsHistory({ token, setError }) {
         ({ ok, error: errorMessage, messages, response_metadata: meta }) => {
           if (!ok) throw new Error(errorMessage);
           const { next_cursor: nextCursor } = meta;
-          const mappedMessages = messages.map(extractMsgFields);
-          setMessages(messages);
+          const mappedMessages = messages
+            .filter((msg) => msg.text.match(/https?:\/\//))
+            .map(extractMsgFields);
+          setMessages(mappedMessages);
           setCursor(nextCursor);
         }
       )

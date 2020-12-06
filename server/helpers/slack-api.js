@@ -30,7 +30,17 @@ const getConversationsHistory = async (token, channel, cursor) => {
     .then((res) => res.data);
 };
 
+const getEndpoint = async (method, token) =>
+  slack
+    .get(`/api/${method}`, {
+      headers: {
+        authorization: `Bearer ${token}`,
+      },
+    })
+    .then((res) => res.data);
+
 module.exports = {
   getConversationsList,
   getConversationsHistory,
+  getEndpoint,
 };

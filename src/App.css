@@ -25,6 +25,11 @@
   display: flex;
 }
 
+.App-nav-avatar {
+  margin-right: 0.25em;
+  border-radius: 2px;
+}
+
 .App-nav-title {
   flex-grow: 1;
 }

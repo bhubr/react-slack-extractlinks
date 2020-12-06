@@ -71,7 +71,7 @@ function App() {
     <div className="App">
       <nav className="App-nav">
         <span className="App-nav-title">Slack GetLinks</span>
-        {auth.userId}
+        <img className="App-nav-avatar" src={auth.avatar} alt={auth.name} />
         <button type="button" className="App-nav-btn" onClick={signout}>
           Sign out
         </button>

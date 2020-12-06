@@ -7,9 +7,9 @@ export const getAccessToken = (code) =>
   axios
     .get(`/auth/token?code=${code}`)
     .then((res) => res.data)
-    .then(({ access_token: token, authed_user: user }) => ({
+    .then(({ token, user }) => ({
       token,
-      userId: user.id,
+      ...user,
     }));
 
 export const getConversationsList = async (token, cursor) => {

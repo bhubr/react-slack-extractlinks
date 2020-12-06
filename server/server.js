@@ -7,7 +7,9 @@ const { port, oauth } = require("./settings");
 const {
   getConversationsList,
   getConversationsHistory,
+  getEndpoint,
 } = require("./helpers/slack-api");
+const { raw } = require("express");
 
 const app = express();
 app.use(
@@ -16,7 +18,7 @@ app.use(
   })
 );
 
-app.get("/auth/token", (req, res) => {
+app.get("/auth/token", async (req, res) => {
   const { code } = req.query;
   const { tokenUrl, clientId, clientSecret, redirectUri } = oauth;
   // GitHub wants everything in an url-encoded body
@@ -27,21 +29,31 @@ app.get("/auth/token", (req, res) => {
     redirect_uri: redirectUri,
     grant_type: "authorization_code",
   });
-  axios
-    .post(tokenUrl, payload, {
+  try {
+    const { data: rawData } = await axios.post(tokenUrl, payload, {
       headers: {
-        "content-type": "application/x-www-form-urlencoded;charset=utf-8",
+        "content-type": "application/x-www-form-urlencoded",
       },
-    })
-    // GitHub sends back the response as an url-encoded string
-    .then((resp) => qs.parse(resp.data))
-    .then((data) => res.json(data))
-    .catch((err) => {
-      console.error("Error while requesting a token", err.response.data);
-      res.status(500).json({
-        error: err.message,
-      });
     });
+    const data = qs.parse(rawData);
+    const {
+      access_token: token,
+      authed_user: { id },
+    } = data;
+    const { profile } = await getEndpoint("users.profile.get", token);
+    const { display_name: name, image_24: avatar } = profile;
+    const responseData = { token, user: { id, name, avatar } };
+    return res.json(responseData);
+  } catch (err) {
+    console.error(
+      "Error while requesting a token",
+      err,
+      err.response && err.response.data
+    );
+    res.status(500).json({
+      error: err.message,
+    });
+  }
 });
 
 const checkToken = (req, res, next) => {
@@ -74,6 +86,20 @@ app.get("/api/conversations.history", checkToken, async (req, res) => {
       cursor
     );
     return res.json(history);
+  } catch (err) {
+    console.error(err.message);
+    const statusCode = err.response ? err.response.status : 500;
+    return res.status(statusCode).json({
+      error: err.message,
+    });
+  }
+});
+
+app.get("/api/:method", checkToken, async (req, res) => {
+  const { method } = req.params;
+  try {
+    const data = await getEndpoint(method, req.slackToken);
+    return res.json(data);
   } catch (err) {
     console.error(err.message);
     const statusCode = err.response ? err.response.status : 500;
