@@ -2,6 +2,6 @@
   background: #517;
   color: #fff;
   padding: 0.5em;
-  height: calc(100vh - 46px);
+  height: calc(100vh - 45px);
   overflow-y: scroll;
 }

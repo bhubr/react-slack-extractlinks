@@ -39,16 +39,20 @@ function App() {
 
   if (!auth)
     return (
-      <div className="App container">
-        <OAuth2Login
-          authorizationUrl={authorizationUrl}
-          responseType="code"
-          clientId={clientId}
-          redirectUri={redirectUri}
-          scope={scopes}
-          onSuccess={onSuccess}
-          onFailure={setError}
-        />
+      <div className="App">
+        <nav className="App-nav">
+          <span className="App-nav-title">Slack GetLinks</span>
+          <OAuth2Login
+            authorizationUrl={authorizationUrl}
+            responseType="code"
+            clientId={clientId}
+            redirectUri={redirectUri}
+            scope={scopes}
+            onSuccess={onSuccess}
+            onFailure={setError}
+            className="App-nav-btn"
+          />
+        </nav>
       </div>
     );
 
@@ -57,7 +61,7 @@ function App() {
       <nav className="App-nav">
         <span className="App-nav-title">Slack GetLinks</span>
         {auth.userId}
-        <button type="button" onClick={signout}>
+        <button type="button" className="App-nav-btn" onClick={signout}>
           Sign out
         </button>
       </nav>
