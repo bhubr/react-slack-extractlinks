@@ -22,7 +22,3 @@ In order to use it, you need to:
 4. configure the environment variables (see `/.env.local.sample` and `/server/.env.sample`)
 
 Keep in mind that even if you sign in to Slack with _your_ account, when you sign in to this app, your access token will be granted to the **bot**, not to your user account!
-
-## Todo
-
-- Replace `conversations.list` with [users.conversations](https://api.slack.com/methods/users.conversations)

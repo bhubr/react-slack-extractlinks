@@ -7,7 +7,7 @@ const slack = axios.create({
 const getConversationsList = async (token, cursor = "") => {
   let query = "?limit=200";
   if (cursor) query += `&cursor=${cursor}`;
-  const url = `/api/conversations.list${query}`;
+  const url = `/api/users.conversations${query}`;
   return slack
     .get(url, {
       headers: {
