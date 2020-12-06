@@ -31,11 +31,14 @@ function App() {
 
   const loadConversations = (cur = "") =>
     getConversationsList(auth.token, cur)
-      .then(({ channels, response_metadata: meta }) => {
-        const { next_cursor: nextCursor } = meta;
-        setConversations(channels);
-        setCursor(nextCursor);
-      })
+      .then(
+        ({ ok, error: errorMessage, channels, response_metadata: meta }) => {
+          if (!ok) throw new Error(errorMessage);
+          const { next_cursor: nextCursor } = meta;
+          setConversations(channels);
+          setCursor(nextCursor);
+        }
+      )
       .catch(setError);
 
   useEffect(() => {
@@ -73,7 +76,6 @@ function App() {
           Sign out
         </button>
       </nav>
-      {error && <div className="App-error">{error.message}</div>}
 
       <div className="App-inner">
         <ConversationsList
@@ -81,14 +83,27 @@ function App() {
           onClickNext={handleClickNext}
         />
 
-        <Switch>
-          <Route
-            exact
-            path="/"
-            render={() => <p className="App-idle">Choose a channel</p>}
-          />
-          <Route path="/:channelId" component={ConversationsHistory} />
-        </Switch>
+        <main className="App-main">
+          {error && <div className="App-error">{error.message}</div>}
+
+          <Switch>
+            <Route
+              exact
+              path="/"
+              render={() => <p className="App-idle">Choose a channel</p>}
+            />
+            <Route
+              path="/:channelId"
+              render={(props) => (
+                <ConversationsHistory
+                  {...props}
+                  token={auth.token}
+                  setError={setError}
+                />
+              )}
+            />
+          </Switch>
+        </main>
       </div>
     </div>
   );

@@ -4,7 +4,10 @@ const axios = require("axios");
 const qs = require("qs");
 require("dotenv").config();
 const { port, oauth } = require("./settings");
-const { getConversationsList } = require("./helpers/slack-api");
+const {
+  getConversationsList,
+  getConversationsHistory,
+} = require("./helpers/slack-api");
 
 const app = express();
 app.use(
@@ -41,17 +44,40 @@ app.get("/auth/token", (req, res) => {
     });
 });
 
-app.get("/api/conversations.list", async (req, res) => {
+const checkToken = (req, res, next) => {
   const { authorization } = req.headers;
-  const { cursor } = { cursor: "", ...req.query };
   if (!authorization) return res.sendStatus(401);
   const [, token] = authorization.match(/Bearer (.*)/);
+  req.slackToken = token;
+  return next();
+};
+
+app.get("/api/conversations.list", checkToken, async (req, res) => {
+  const cursor = req.query.cursor || "";
   try {
-    const conversations = await getConversationsList(token, cursor);
+    const conversations = await getConversationsList(req.slackToken, cursor);
     return res.json(conversations);
   } catch (err) {
     console.error(err);
     return res.status(err.response.status).json({
+      error: err.message,
+    });
+  }
+});
+
+app.get("/api/conversations.history", checkToken, async (req, res) => {
+  const { cursor, channel } = { cursor: "", ...req.query };
+  try {
+    const history = await getConversationsHistory(
+      req.slackToken,
+      channel,
+      cursor
+    );
+    return res.json(history);
+  } catch (err) {
+    console.error(err.message);
+    const statusCode = err.response ? err.response.status : 500;
+    return res.status(statusCode).json({
       error: err.message,
     });
   }

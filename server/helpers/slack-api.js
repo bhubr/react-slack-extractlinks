@@ -1,13 +1,13 @@
 const axios = require("axios");
 
 const slack = axios.create({
-  baseURL: "https://slack.com/api",
+  baseURL: "https://slack.com",
 });
 
 const getConversationsList = async (token, cursor = "") => {
   let query = "?limit=200";
   if (cursor) query += `&cursor=${cursor}`;
-  const url = `/conversations.list${query}`;
+  const url = `/api/conversations.list${query}`;
   return slack
     .get(url, {
       headers: {
@@ -17,6 +17,20 @@ const getConversationsList = async (token, cursor = "") => {
     .then((res) => res.data);
 };
 
+const getConversationsHistory = async (token, channel, cursor) => {
+  let query = `?channel=${channel}`;
+  if (cursor) query += `&cursor=${cursor}`;
+  console.log(token, query);
+  return slack
+    .get(`/api/conversations.history${query}`, {
+      headers: {
+        authorization: `Bearer ${token}`,
+      },
+    })
+    .then((res) => res.data);
+};
+
 module.exports = {
   getConversationsList,
+  getConversationsHistory,
 };

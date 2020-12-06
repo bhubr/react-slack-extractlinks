@@ -6,10 +6,16 @@
 .App-error {
   background: #b33;
   color: white;
+  padding: 0.25em 0;
+  text-align: center;
 }
 
 .App-inner {
   display: flex;
+}
+
+.App-main {
+  flex-grow: 1;
 }
 
 .App-nav {
