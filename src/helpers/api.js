@@ -1,16 +1,10 @@
 import axios from "axios";
 import { apiUrl } from "../settings";
 
-const local = axios.create({
-  baseURL: apiUrl,
-});
-
-const slack = axios.create({
-  baseURL: "https://slack.com/api",
-});
+axios.defaults.baseURL = apiUrl;
 
 export const getAccessToken = (code) =>
-  local
+  axios
     .get(`/auth/token?code=${code}`)
     .then((res) => res.data)
     .then(({ access_token: token, authed_user: user }) => ({
@@ -18,9 +12,9 @@ export const getAccessToken = (code) =>
       userId: user.id,
     }));
 
-export const getConversationsList = (token) =>
-  slack
-    .get("/conversations.list", {
+export const getConversationsList = async (token) =>
+  axios
+    .get("/api/conversations.list", {
       headers: {
         authorization: `Bearer ${token}`,
       },

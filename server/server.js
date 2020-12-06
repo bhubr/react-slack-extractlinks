@@ -4,6 +4,7 @@ const axios = require("axios");
 const qs = require("qs");
 require("dotenv").config();
 const { port, oauth } = require("./settings");
+const { getConversationsList } = require("./helpers/slack-api");
 
 const app = express();
 app.use(
@@ -11,36 +12,6 @@ app.use(
     origin: "http://localhost:3000",
   })
 );
-
-app.get("/spotify/token", (req, res) => {
-  const { code } = req.query;
-  const { tokenUrl, clientId, clientSecret, redirectUri } = oauth;
-  // Spotify requires us to send client id and client secret, in base64, as authorization header
-  const authString = Buffer.from(`${clientId}:${clientSecret}`).toString(
-    "base64"
-  );
-  // Spotify wants url-encoded body (not including client id&secret)
-  const payload = qs.stringify({
-    code,
-    redirect_uri: redirectUri,
-    grant_type: "authorization_code",
-  });
-  axios
-    .post(tokenUrl, payload, {
-      headers: {
-        authorization: `Basic ${authString}`,
-        "content-type": "application/x-www-form-urlencoded;charset=utf-8",
-      },
-    })
-    .then((resp) => resp.data)
-    .then((data) => res.json(data))
-    .catch((err) => {
-      console.error("Error while requesting a token", err.response.data);
-      res.status(500).json({
-        error: err.message,
-      });
-    });
-});
 
 app.get("/auth/token", (req, res) => {
   const { code } = req.query;
@@ -68,6 +39,22 @@ app.get("/auth/token", (req, res) => {
         error: err.message,
       });
     });
+});
+
+app.get("/api/conversations.list", async (req, res) => {
+  const { authorization } = req.headers;
+  console.log(authorization);
+  if (!authorization) return res.sendStatus(401);
+  const [, token] = authorization.match(/Bearer (.*)/);
+  try {
+    const conversations = await getConversationsList(token);
+    return res.json(conversations);
+  } catch (err) {
+    console.error(err);
+    return res.status(err.response.status).json({
+      error: err.message,
+    });
+  }
 });
 
 app.listen(port, (err) => {

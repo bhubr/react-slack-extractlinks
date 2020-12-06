@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
 import OAuth2Login from "react-simple-oauth2-login";
+import ConversationsList from "./components/ConversationsList";
 import { getAccessToken, getConversationsList } from "./helpers/api";
 import {
   getStoredAuth,
   setStoredAuth,
   resetStoredAuth,
 } from "./helpers/storage";
-import "./App.css";
 import { authorizationUrl, clientId, scopes, redirectUri } from "./settings";
+import "./App.css";
 
 function App() {
   const [auth, setAuth] = useState(getStoredAuth());
@@ -55,7 +56,7 @@ function App() {
           Sign out
         </button>
       </nav>
-      {conversations && conversations.length}
+      {conversations && <ConversationsList channels={conversations.channels} />}
     </div>
   );
 }
