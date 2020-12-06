@@ -5,11 +5,19 @@ import Markdown from "react-markdown";
 import { getConversationsHistory } from "../helpers/api";
 import "./ConversationsHistory.css";
 
+const extractLinks = (text) => {
+  const allLinks = text.match(/<https?:\/\/[^>]+/g);
+  return allLinks
+    ? allLinks.map((link) => link.substr(1, link.length - 2))
+    : null;
+};
+
 const extractMsgFields = ({ client_msg_id: id, type, text }) => ({
   id,
   type,
   text,
   hasLinks: text.match(/https?:\/\//),
+  extractedLinks: extractLinks(text),
 });
 
 function ConversationsHistory({ token, setError }) {
@@ -52,7 +60,14 @@ function ConversationsHistory({ token, setError }) {
           })}
           key={msg.id}
         >
-          <Markdown source={`**${idx}** ${msg.text}`} />
+          <div>
+            <Markdown source={`**${idx}** ${msg.text}`} />
+          </div>
+
+          <div>
+            {msg.hasLinks &&
+              msg.extractedLinks.map((link) => <div key={link}>{link}</div>)}
+          </div>
         </div>
       ))}
     </div>

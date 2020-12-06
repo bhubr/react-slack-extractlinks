@@ -1,11 +1,19 @@
 .ConversationsHistory {
   height: calc(100vh - 45px);
+  max-width: calc(100vw - 200px);
   overflow-y: scroll;
 }
 
 .ConversationsHistory-msg {
   padding: 0 0.5em;
   font-size: 14px;
+  display: flex;
+  max-width: 100%;
+}
+
+.ConversationsHistory-msg > div {
+  width: 50%;
+  overflow-wrap: break-word;
 }
 
 .ConversationsHistory-msg-dimmed {
