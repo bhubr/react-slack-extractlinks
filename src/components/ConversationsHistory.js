@@ -1,6 +1,9 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useParams } from "react-router-dom";
-import { getConversationsHistory } from "../helpers/api";
+import {
+  getConversationsHistory,
+  getConversationsMembers,
+} from "../helpers/api";
 import "./ConversationsHistory.css";
 import ConversationMessage from "./ConversationMessage";
 
@@ -21,10 +24,11 @@ const extractLinks = (text) => {
   });
 };
 
-const extractMsgFields = ({ client_msg_id: id, ts, type, text }) => ({
+const extractMsgFields = ({ client_msg_id: id, ts, type, text, user }) => ({
   id,
   ts,
   type,
+  user,
   text,
   hasLinks: text.match(/https?:\/\//),
   extractedLinks: extractLinks(text),
@@ -32,18 +36,41 @@ const extractMsgFields = ({ client_msg_id: id, ts, type, text }) => ({
 
 function ConversationsHistory({ token, setError }) {
   const [messages, setMessages] = useState(null);
-  const [cursor, setCursor] = useState("");
+  const [members, setMembers] = useState([]);
+  const [histCursor, setHistCursor] = useState("");
   const [hideNoLinks, setHideNoLinks] = useState(false);
+  const [selectedUser, setSelectedUser] = useState("");
   const { channelId } = useParams();
 
-  const getFilteredMessages = (messages, hideNoLinks) =>
-    hideNoLinks
+  const getFilteredMessages = (messages, hideNoLinks, selectedUser) => {
+    let filtered = hideNoLinks
       ? messages.filter((msg) => msg.text.match(/https?:\/\//))
       : messages;
+    if (selectedUser) {
+      filtered = filtered.filter((msg) => msg.user === selectedUser);
+    }
+    return filtered;
+  };
+
+  const getUserFilterOptions = (members, messages) =>
+    members
+      .reduce((c, id) => {
+        const msgCount = messages
+          ? messages.filter(({ user }) => user === id).length
+          : 0;
+        if (msgCount === 0) return c;
+        return [...c, { id, msgCount }];
+      }, [])
+      .sort((a, b) => b.msgCount - a.msgCount);
 
   const filteredMessages = useMemo(
-    () => getFilteredMessages(messages, hideNoLinks),
-    [messages, hideNoLinks]
+    () => getFilteredMessages(messages, hideNoLinks, selectedUser),
+    [messages, hideNoLinks, selectedUser]
+  );
+
+  const userFilterOptions = useMemo(
+    () => getUserFilterOptions(members, messages),
+    [messages, members]
   );
 
   const loadMessages = useCallback(
@@ -55,7 +82,20 @@ function ConversationsHistory({ token, setError }) {
             const { next_cursor: nextCursor } = meta;
             const mappedMessages = messages.map(extractMsgFields);
             setMessages(mappedMessages);
-            setCursor(nextCursor);
+            setHistCursor(nextCursor);
+          }
+        )
+        .catch(setError),
+    [token, channelId, setError]
+  );
+
+  const loadMembers = useCallback(
+    () =>
+      getConversationsMembers(token, channelId)
+        .then(
+          ({ ok, error: errorMessage, members, response_metadata: meta }) => {
+            if (!ok) throw new Error(errorMessage);
+            setMembers(members);
           }
         )
         .catch(setError),
@@ -67,7 +107,12 @@ function ConversationsHistory({ token, setError }) {
     loadMessages();
   }, [token, channelId, messages, loadMessages]);
 
-  const handleClickNext = () => loadMessages(cursor);
+  useEffect(() => {
+    if (!token || members.length > 0) return;
+    loadMembers();
+  }, [token, members, loadMembers]);
+
+  const handleClickNext = () => loadMessages(histCursor);
 
   if (!messages) {
     return <p>loading...</p>;
@@ -84,6 +129,21 @@ function ConversationsHistory({ token, setError }) {
             onChange={(e) => setHideNoLinks(e.target.checked)}
           />{" "}
           Only messages with links
+        </label>
+        <label htmlFor="members">
+          <select
+            id="members"
+            onChange={(e) => setSelectedUser(e.target.value)}
+            value={selectedUser}
+          >
+            <option value="">&mdash;</option>
+            {userFilterOptions.map(({ id, msgCount }) => (
+              <option key={id} value={id}>
+                {id} ({msgCount})
+              </option>
+            ))}
+          </select>
+          User
         </label>
       </div>
 

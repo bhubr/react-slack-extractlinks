@@ -34,3 +34,15 @@ export const getConversationsHistory = async (token, channel, cursor) => {
     })
     .then((res) => res.data);
 };
+
+export const getConversationsMembers = async (token, channel, cursor = "") => {
+  let query = `?channel=${channel}`;
+  if (cursor) query += `&cursor=${cursor}`;
+  return axios
+    .get(`/api/conversations.members${query}`, {
+      headers: {
+        authorization: `Bearer ${token}`,
+      },
+    })
+    .then((res) => res.data);
+};

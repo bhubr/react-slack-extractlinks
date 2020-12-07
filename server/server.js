@@ -98,7 +98,7 @@ app.get("/api/conversations.history", checkToken, async (req, res) => {
 app.get("/api/:method", checkToken, async (req, res) => {
   const { method } = req.params;
   try {
-    const data = await getEndpoint(method, req.slackToken);
+    const data = await getEndpoint(method, req.slackToken, req.query);
     return res.json(data);
   } catch (err) {
     console.error(err.message);

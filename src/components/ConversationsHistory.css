@@ -1,5 +1,14 @@
 .ConversationsHistory-inner {
-  height: calc(100vh - 65px);
+  height: calc(100vh - 58px);
   max-width: calc(100vw - 200px);
   overflow-y: scroll;
+}
+
+.ConversationsHistory-filters {
+  background: #cce;
+  padding: 0.125em 0.5em;
+}
+
+.ConversationsHistory-filters > label {
+  margin-right: 2em;
 }

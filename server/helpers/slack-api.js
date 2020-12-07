@@ -1,4 +1,5 @@
 const axios = require("axios");
+const qs = require("querystring");
 
 const slack = axios.create({
   baseURL: "https://slack.com",
@@ -30,9 +31,9 @@ const getConversationsHistory = async (token, channel, cursor) => {
     .then((res) => res.data);
 };
 
-const getEndpoint = async (method, token) =>
+const getEndpoint = async (method, token, query) =>
   slack
-    .get(`/api/${method}`, {
+    .get(`/api/${method}?${qs.stringify(query)}`, {
       headers: {
         authorization: `Bearer ${token}`,
       },
