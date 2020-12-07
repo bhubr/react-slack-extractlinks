@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { getConversationsHistory } from "../helpers/api";
 import "./ConversationsHistory.css";
@@ -33,7 +33,18 @@ const extractMsgFields = ({ client_msg_id: id, ts, type, text }) => ({
 function ConversationsHistory({ token, setError }) {
   const [messages, setMessages] = useState(null);
   const [cursor, setCursor] = useState("");
+  const [hideNoLinks, setHideNoLinks] = useState(false);
   const { channelId } = useParams();
+
+  const getFilteredMessages = (messages, hideNoLinks) =>
+    hideNoLinks
+      ? messages.filter((msg) => msg.text.match(/https?:\/\//))
+      : messages;
+
+  const filteredMessages = useMemo(
+    () => getFilteredMessages(messages, hideNoLinks),
+    [messages, hideNoLinks]
+  );
 
   const loadMessages = useCallback(
     (cur = "") =>
@@ -42,9 +53,7 @@ function ConversationsHistory({ token, setError }) {
           ({ ok, error: errorMessage, messages, response_metadata: meta }) => {
             if (!ok) throw new Error(errorMessage);
             const { next_cursor: nextCursor } = meta;
-            const mappedMessages = messages
-              // .filter((msg) => msg.text.match(/https?:\/\//))
-              .map(extractMsgFields);
+            const mappedMessages = messages.map(extractMsgFields);
             setMessages(mappedMessages);
             setCursor(nextCursor);
           }
@@ -66,9 +75,23 @@ function ConversationsHistory({ token, setError }) {
 
   return (
     <div className="ConversationsHistory">
-      {messages.map((msg, idx) => (
-        <ConversationMessage key={msg.id || msg.ts} msg={msg} idx={idx} />
-      ))}
+      <div className="ConversationsHistory-filters">
+        <label htmlFor="hideNoLinks">
+          <input
+            id="hideNoLinks"
+            type="checkbox"
+            checked={hideNoLinks}
+            onChange={(e) => setHideNoLinks(e.target.checked)}
+          />{" "}
+          Only messages with links
+        </label>
+      </div>
+
+      <div className="ConversationsHistory-inner">
+        {filteredMessages.map((msg, idx) => (
+          <ConversationMessage key={msg.id || msg.ts} msg={msg} idx={idx} />
+        ))}
+      </div>
     </div>
   );
 }

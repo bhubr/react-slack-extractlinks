@@ -1,5 +1,5 @@
-.ConversationsHistory {
-  height: calc(100vh - 45px);
+.ConversationsHistory-inner {
+  height: calc(100vh - 65px);
   max-width: calc(100vw - 200px);
   overflow-y: scroll;
 }

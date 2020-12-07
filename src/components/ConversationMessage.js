@@ -10,7 +10,7 @@ function ConversationMessage({ msg, idx }) {
       })}
     >
       <div>
-        <Markdown source={`**${idx}** ${msg.text}`} />
+        <Markdown source={msg.text} />
       </div>
 
       <div>
