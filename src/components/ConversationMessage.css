@@ -7,7 +7,18 @@
 .ConversationMessage > div {
   width: 50%;
   overflow-wrap: break-word;
+  word-wrap: break-all;
+  hyphens: auto;
   padding: 0 0.5em;
+}
+
+.ConversationMessage pre {
+  white-space: pre-wrap;
+}
+
+.ConversationMessage-datetime {
+  font-weight: 500;
+  color: #000;
 }
 
 .ConversationMessage-dimmed {
