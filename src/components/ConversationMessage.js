@@ -5,19 +5,26 @@ import "./ConversationMessage.css";
 const formatTs = (ts) => {
   const [secStr] = ts.split(".");
   const sec = Number(secStr);
-  const [date, time] = new Date(sec * 1000).toISOString().split("T");
-  return `${date} ${time.substr(0, 5)}`;
+  const [, month, date, , time] = new Date(sec * 1000).toString().split(" ");
+  return {
+    date: `${month} ${date}`,
+    time: time.substr(0, 5),
+  };
 };
 
 function ConversationMessage({ msg, idx }) {
+  const { date, time } = formatTs(msg.ts);
   return (
     <div
       className={classNames("ConversationMessage", {
         "ConversationMessage-dimmed": !msg.hasLinks,
       })}
     >
-      <div>
-        <span className="ConversationMessage-datetime">{formatTs(msg.ts)}</span>
+      <div className="ConversationMessage-md">
+        <span className="ConversationMessage-ts">
+          <span className="ConversationMessage-ts-date">{date}</span>
+          <span className="ConversationMessage-ts-time">{time}</span>
+        </span>
         <Markdown source={msg.text} />
       </div>
 

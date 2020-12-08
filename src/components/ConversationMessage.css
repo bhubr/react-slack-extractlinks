@@ -2,6 +2,12 @@
   font-size: 14px;
   display: flex;
   max-width: 100%;
+  margin: 1em 0;
+}
+
+.ConversationMessage:after {
+  content: "";
+  clear: both;
 }
 
 .ConversationMessage > div {
@@ -16,9 +22,31 @@
   white-space: pre-wrap;
 }
 
-.ConversationMessage-datetime {
-  font-weight: 500;
-  color: #000;
+.ConversationMessage-ts {
+  float: left;
+  border-radius: 2px;
+  font-size: 12px;
+  margin: 0.25em 0.5em 0.25em 0;
+}
+
+.ConversationMessage-ts span {
+  display: block;
+  text-align: center;
+  padding: 1px 3px;
+}
+
+.ConversationMessage-ts-date {
+  background: #925;
+  color: #eee;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+}
+
+.ConversationMessage-ts-time {
+  background: #ddd;
+  color: #222;
+  border-bottom-left-radius: 3px;
+  border-bottom-right-radius: 3px;
 }
 
 .ConversationMessage-dimmed {
