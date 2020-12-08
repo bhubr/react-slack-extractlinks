@@ -2,6 +2,13 @@ import classNames from "classnames";
 import Markdown from "react-markdown";
 import "./ConversationMessage.css";
 
+const formatTs = (ts) => {
+  const [secStr] = ts.split(".");
+  const sec = Number(secStr);
+  const [date, time] = new Date(sec * 1000).toISOString().split("T");
+  return `${date} ${time.substr(0, 5)}`;
+};
+
 function ConversationMessage({ msg, idx }) {
   return (
     <div
@@ -10,6 +17,7 @@ function ConversationMessage({ msg, idx }) {
       })}
     >
       <div>
+        <span className="ConversationMessage-datetime">{formatTs(msg.ts)}</span>
         <Markdown source={msg.text} />
       </div>
 
